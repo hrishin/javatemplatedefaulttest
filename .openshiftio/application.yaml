@@ -11,14 +11,10 @@ metadata:
     description: >-
       The REST API Level 0 Mission provides a basic example of mapping business operations to a remote procedure call endpoint over HTTP using a REST framework.
 parameters:
-- name: SUFFIX_NAME
-  description: The suffix name for the template objects
-  displayName: Suffix name
-  value: ''
 - name: RELEASE_VERSION
-  description: The release version number of application
-  displayName: Release version
-  value: 2.0.0
+  displayName: OpenJDK 8 image version to use
+  description: Specifies which version of the OpenShift OpenJDK 8 image to use
+  value: 1.3-8
 - name: RUNTIME_VERSION
   displayName: OpenJDK 8 image version to use
   description: Specifies which version of the OpenShift OpenJDK 8 image to use
@@ -57,16 +53,12 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: spring-boot-rest-http${SUFFIX_NAME}
-    labels:
-      version: ${RELEASE_VERSION}
+    name: spring-boot-rest-http
   spec: {}
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: spring-boot-rest-http${SUFFIX_NAME}
-    labels:
-      version: ${RELEASE_VERSION}  
+    name: runtime
   spec:
     tags:
     - name: "${RUNTIME_VERSION}"
@@ -76,14 +68,12 @@ objects:
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: spring-boot-rest-http${SUFFIX_NAME}
-    labels:
-      version: ${RELEASE_VERSION}
+    name: spring-boot-rest-http
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: spring-boot-rest-http${SUFFIX_NAME}:${RELEASE_VERSION}
+        name: spring-boot-rest-http:${RELEASE_VERSION}
     postCommit: {}
     resources: {}
     source:
@@ -120,12 +110,11 @@ objects:
   kind: Service
   metadata:
     labels:
-      expose: "true"
       app: spring-boot-rest-http
       provider: snowdrop
-      version: ${RELEASE_VERSION}
+      version: "BOOSTER_VERSION"
       group: io.openshift.booster
-    name: spring-boot-rest-http${SUFFIX_NAME}
+    name: spring-boot-rest-http
   spec:
     ports:
     - name: http
@@ -142,9 +131,9 @@ objects:
     labels:
       app: spring-boot-rest-http
       provider: snowdrop
-      version: ${RELEASE_VERSION}
+      version: "BOOSTER_VERSION"
       group: io.openshift.booster
-    name: spring-boot-rest-http${SUFFIX_NAME}
+    name: spring-boot-rest-http
   spec:
     replicas: 1
     selector:
@@ -160,7 +149,7 @@ objects:
         labels:
           app: spring-boot-rest-http
           provider: snowdrop
-          version: ${RELEASE_VERSION}
+          version: "BOOSTER_VERSION"
           group: io.openshift.booster
       spec:
         containers:
@@ -169,7 +158,7 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          image: spring-boot-rest-http:${RELEASE_VERSION}
+          image: spring-boot-rest-http
           imagePullPolicy: IfNotPresent
           name: spring-boot
           ports:
@@ -201,7 +190,7 @@ objects:
         - spring-boot
         from:
           kind: ImageStreamTag
-          name: spring-boot-rest-http${SUFFIX_NAME}:${RELEASE_VERSION}
+          name: spring-boot-rest-http:${RELEASE_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: Route
@@ -209,12 +198,12 @@ objects:
     labels:
       app: spring-boot-rest-http
       provider: snowdrop
-      version: ${RELEASE_VERSION}
+      version: "BOOSTER_VERSION"
       group: io.openshift.booster
-    name: spring-boot-rest-http${SUFFIX_NAME}
+    name: spring-boot-rest-http
   spec:
     port:
       targetPort: 8080
     to:
       kind: Service
-      name: spring-boot-rest-http${SUFFIX_NAME}
+      name: spring-boot-rest-http
