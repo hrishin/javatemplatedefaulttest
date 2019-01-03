@@ -13,7 +13,7 @@ osio {
   cd {
 
     def resources = processTemplate(params: [
-          release_version: "1.0.${env.BUILD_NUMBER}"
+          RELEASE_VERSION: "1.0.${env.BUILD_NUMBER}"
     ])
     echo "CD build"
 
