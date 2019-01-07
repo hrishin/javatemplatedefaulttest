@@ -1,8 +1,8 @@
-@Library('github.com/rupalibehera/osio-pipeline@pod_template') _
+@Library('github.com/hrishin/osio-pipeline@build-deploy-fix')_
 def utils = new io.openshift.Utils()
 
 osio {
-  
+
   config runtime: 'java', version: '1.8'
 
   ci {
