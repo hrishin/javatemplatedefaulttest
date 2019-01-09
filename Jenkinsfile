@@ -1,4 +1,4 @@
-@Library('github.com/hrishin/osio-pipeline@build-deploy-fix')_
+@Library('github.com/hrishin/osio-pipeline@fix-build-deploy')_
 def utils = new io.openshift.Utils()
 
 osio {
